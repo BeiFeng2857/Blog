@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="never">
+    <title >北风</title>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+</head>
+<body>
+    <div id="header-user">
+        <img src="static/img/header.jpg">
+        <div class="text">
+            <h3>北风</h3>
+            <p></p>
+        </div>
+    </div>
+    <div id="nav">
+        <a>首页</a>
+        <a href="http://127.0.0.1:51786/kol">KOL</a>
+        <a></a>
+        <a></a>
+        <a></a>
+    </div>
+    <table class="kol">
+        <thead>
+            <tr>
+                <th width="200">博主名</th>
+                <th width="100">国家</th>
+                <th width="100">语言</th>
+                <th width="550">主页链接</th>
+                <th width="100">粉丝数</th>
+                <th width="200">平均播放数</th>
+                <th width="400">邮箱</th>
+        </thead>
+    </table>
+    <div class="container">
+        <div class="col-xs-8 col-xs-push-2">
+            <ul class="list-group" id="list-array">
+            </ul>
+        </div>
+    </div>
+<script>
+    var listArray = document.getElementById("list-array");
+
+    //添加KOL数据
+    function kol_data(data) {
+        //获取每一条电影信息并绚染
+        for (var i = 0; i < data.length; i++) {
+            //博主信息
+            var username = data[i].user_name;
+            var user_country = data[i].user_country;
+            var user_language = data[i].user_language;
+            var channel_url = data[i].channel_url;
+            var fans = data[i].fans;
+            var view_mean = data[i].view_mean;
+            var email = data[i].email;
+            //每个完整数据之间用创造bom节点的方式去拼接
+            var li = document.createElement("li");
+            li.className = 'list-group-item';
+            //拼接电影信息
+            var kolData =
+                '<table class="media">\n' +
+                '        <thead>\n' +
+                '            <tr>\n' +
+                '                <th width="200">'+ username + '</th>\n' +
+                '                <th width="100">'+ user_country + '</th>\n' +
+                '                <th width="100">'+ user_language + '</th>\n' +
+                '                <th width="550">'+ channel_url + '</th>\n' +
+                '                <th width="100">'+ fans + '</th>\n' +
+                '                <th width="200">'+ view_mean + '</th>\n' +
+                '                <th width="400">'+ email + '</th>\n' +
+                '        </thead>\n' +
+                '    </table>';
+
+            li.innerHTML = kolData;
+
+            //添加li节点
+            listArray.append(li);
+        }
+
+    }
+
+    //ajax中get请求通用写法
+    function ajax(url, kol_data) {
+        // 初始化异步请求的对象
+        var xhr = new XMLHttpRequest();
+        // 监听请求过程状态的变化
+        xhr.onreadystatechange = function () {
+            // 服务器端放回了数据，并且数据正确
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                // 将字符串转换为json的数组
+                var arry = JSON.parse(xhr.responseText);
+                console.log(arry);
+                kol_data(arry);//方法作为参数回调,
+                // location.href = '三级联动案例.html'//可以到达下一个界面
+            }
+        }
+        // 初始化请求
+        xhr.open('POST', url);
+        // 发送请求
+        xhr.send('game');
+    }
+    ajax('http://127.0.0.1:51786/items', kol_data)
+</script>
+</body>
+</html>
